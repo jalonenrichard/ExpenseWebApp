@@ -1,6 +1,8 @@
 package ee.tptlive.springdemo.controllers;
 
 import ee.tptlive.springdemo.models.Expense;
+import ee.tptlive.springdemo.repositories.ExpenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,19 +13,22 @@ import java.util.List;
 @RequestMapping("api/v1/expenses")
 public class ExpenseController {
 
+    @Autowired
+    private ExpenseRepository expenseRepository;
+
     @GetMapping
     public List<Expense> showAllExpenses() {
-        List<Expense> expenses = new ArrayList<>();
-        return expenses;
+        return expenseRepository.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void createNewExpense() {
+    public void createNewExpense(@RequestBody Expense expense) {
+        expenseRepository.save(expense);
     }
 
     @GetMapping("/{id}")
     public Expense showExpenseById(@PathVariable("id") long id) {
-        return new Expense();
+        return expenseRepository.getOne(id);
     }
 }
